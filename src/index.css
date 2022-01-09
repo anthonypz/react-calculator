@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#calculator {
+  grid-template-rows: minmax(7rem, auto) repeat(5, 6rem);
+}
+
+button {
+  @apply text-3xl border-2 border-neutral-50 bg-neutral-50/75 hover:bg-neutral-50/90 focus:bg-neutral-50/90 outline-none;
+}
