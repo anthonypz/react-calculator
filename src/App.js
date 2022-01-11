@@ -48,7 +48,11 @@ function reducer(state, { type, payload }) {
           currentOperand: null,
         };
       }
-      if (payload.operation === "-" && state.operation.includes("-")) {
+      if (
+        state.currentOperand == null &&
+        payload.operation === "-" &&
+        state.operation.includes("-")
+      ) {
         return state;
       }
       if (payload.operation === "-" && state.operation.includes("+")) {
@@ -82,6 +86,24 @@ function reducer(state, { type, payload }) {
         currentOperand: "0",
         previousOperand: null,
         operation: null,
+      };
+    case ACTIONS.DELETE_DIGIT:
+      if (state.overwrite)
+        return {
+          ...state,
+          overwrite: false,
+          currentOperand: "0",
+        };
+      if (state.currentOperand == null) return state;
+      if (state.currentOperand.length === 1) {
+        return {
+          ...state,
+          currentOperand: "0",
+        };
+      }
+      return {
+        ...state,
+        currentOperand: state.currentOperand.slice(0, -1),
       };
     case ACTIONS.EVALUATE:
       if (
@@ -132,6 +154,17 @@ function evaluate({ currentOperand, previousOperand, operation }) {
   return calculate.toString();
 }
 
+const INTEGER_FORMATTER = new Intl.NumberFormat("en-us", {
+  maximumFractionDigits: 0,
+});
+
+function formatOperand(operand) {
+  if (operand == null) return;
+  const [integer, decimal] = operand.split(".");
+  if (decimal == null) return INTEGER_FORMATTER.format(integer);
+  return `${INTEGER_FORMATTER.format(integer)}.${decimal}`;
+}
+
 export default function App() {
   const [{ currentOperand, previousOperand, operation }, dispatch] = useReducer(
     reducer,
@@ -149,10 +182,10 @@ export default function App() {
           className="col-span-4 bg-neutral-900/75 flex flex-col justify-around items-end p-3 break-words break-all"
         >
           <div className="prev-operand text-neutral-100/75 text-2xl">
-            {previousOperand} {operation}
+            {formatOperand(previousOperand)} {operation}
           </div>
           <div className="curr-operand text-neutral-50 text-4xl">
-            {currentOperand}
+            {formatOperand(currentOperand)}
           </div>
         </div>
         <button
@@ -162,7 +195,11 @@ export default function App() {
         >
           AC
         </button>
-        <button id="delete" className="material-icons-outlined">
+        <button
+          id="delete"
+          className="material-icons-outlined"
+          onClick={() => dispatch({ type: ACTIONS.DELETE_DIGIT })}
+        >
           backspace
         </button>
         <OperationButton id="divide" operation="÷" dispatch={dispatch} />
