@@ -1,6 +1,6 @@
 # React Calculator
 
-A calculator app built in React. The project is a part of freeCodeCamp's 300-hour [Front End Development Certification](https://www.freecodecamp.org/learn/front-end-development-libraries/). A list of [user stories](https://www.freecodecamp.org/learn/front-end-development-libraries/front-end-development-libraries-projectss/build-a-javascript-calculator) were provided, which had to be built to the given specification. This is project 4 of 5.
+A beautiful calculator app built in React.
 
 ## Features
 
